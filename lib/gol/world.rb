@@ -37,18 +37,6 @@ class World
     new_generation
   end
 
-  def dead_neighbours_for(x, y)
-    NEIGHBOURS_OFFSETS
-      .collect { |offset| offset_point([x, y], offset) }
-        .select { |point| !has_life_at?(*point) }
-  end
-
-  NEIGHBOURS_OFFSETS = [
-    [-1, -1], [-1, 0], [-1, 1],
-    [0, -1], [0, 1],
-    [1, -1], [1, 0], [1, 1]
-  ]
-
   def neighbours_count(point)
     NEIGHBOURS_OFFSETS.inject(0) do |sum, offset|
       sum += 1 if has_life_at?(*offset_point(point, offset))
@@ -56,7 +44,19 @@ class World
     end
   end
 
+  def dead_neighbours_for(x, y)
+    NEIGHBOURS_OFFSETS
+      .collect { |offset| offset_point([x, y], offset) }
+        .select { |point| !has_life_at?(*point) }
+  end
+
   def offset_point(point, offset)
     [point[0] + offset[0], point[0] + offset[1]]
   end
+
+  NEIGHBOURS_OFFSETS = [
+    [-1, -1], [-1, 0], [-1, 1],
+    [0, -1], [0, 1],
+    [1, -1], [1, 0], [1, 1]
+  ]
 end
