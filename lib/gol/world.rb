@@ -5,16 +5,18 @@ class World
   end
 
   def create_life_at(x, y)
-    @alife_cells.add(Point.new(x, y))
+    @alife_cells.add([x, y])
   end
 
   def tick!
-    @alife_cells = cells_alife_in_next_gen
-      .concat(cells_binged_to_life_in_next_gen).to_set
+    @alife_cells = (
+        cells_alife_in_next_gen +
+        cells_binged_to_life_in_next_gen
+      ).to_set
   end
 
   def has_life_at?(x, y)
-    @alife_cells.include?(Point.new(x, y))
+    @alife_cells.include?([x, y])
   end
 
   private
@@ -28,29 +30,17 @@ class World
   def cells_binged_to_life_in_next_gen
     new_generation = []
     @alife_cells.each do |point|
-      dead_neighbours = @@neighbours_offset.select do |offset|
-        point_with_offset = offset_point(point, offset)
-
-        !has_life_at?(point_with_offset[0], point_with_offset[1])
-      end.collect do |offset|
-        Point.new(*offset_point(point, offset))
-      end
-
-      dead_neighbours_for(point).each do |point|
+      dead_neighbours_for(*point).each do |point|
         new_generation << point if neighbours_count(point) == 3
       end
     end
     new_generation
   end
 
-  def dead_neighbours_for(point)
-    @@neighbours_offset.select do |offset|
-      point_with_offset = offset_point(point, offset)
-
-      !has_life_at?(point_with_offset[0], point_with_offset[1])
-    end.collect do |offset|
-      Point.new(*offset_point(point, offset))
-    end
+  def dead_neighbours_for(x, y)
+    @@neighbours_offset
+      .collect { |offset| offset_point([x, y], offset) }
+        .select { |point| !has_life_at?(*point) }
   end
 
   @@neighbours_offset = [
@@ -66,22 +56,6 @@ class World
   end
 
   def offset_point(point, offset)
-    [point.x + offset[0], point.y + offset[1]]
-  end
-
-  class Point
-    attr_reader :x, :y
-
-    def initialize(x, y)
-      @x, @y = x, y
-    end
-
-    def eql?(point)
-      x == point.x && y == point.y
-    end
-
-    def hash
-      [x, y].hash
-    end
+    [point[0] + offset[0], point[0] + offset[1]]
   end
 end
