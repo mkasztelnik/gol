@@ -38,19 +38,19 @@ class World
   end
 
   def dead_neighbours_for(x, y)
-    @@neighbours_offset
+    NEIGHBOURS_OFFSETS
       .collect { |offset| offset_point([x, y], offset) }
         .select { |point| !has_life_at?(*point) }
   end
 
-  @@neighbours_offset = [
+  NEIGHBOURS_OFFSETS = [
     [-1, -1], [-1, 0], [-1, 1],
     [0, -1], [0, 1],
     [1, -1], [1, 0], [1, 1]
   ]
 
   def neighbours_count(point)
-    @@neighbours_offset.inject(0) do |sum, offset|
+    NEIGHBOURS_OFFSETS.inject(0) do |sum, offset|
       sum += 1 if has_life_at?(*offset_point(point, offset))
       sum
     end
