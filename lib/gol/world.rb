@@ -50,9 +50,10 @@ class World
   ]
 
   def neighbours_count(point)
-    @@neighbours_offset.select do |offset|
-      has_life_at?(*offset_point(point, offset))
-    end.size
+    @@neighbours_offset.inject(0) do |sum, offset|
+      sum += 1 if has_life_at?(*offset_point(point, offset))
+      sum
+    end
   end
 
   def offset_point(point, offset)
