@@ -43,4 +43,73 @@ describe World do
       expect(subject.has_life_at?(1, 1)).to be_true
     end
   end
+
+  context 'Rule #3: Any live cell with more than three live neighbours dies, as if by overcrowding.' do
+    it 'cell is dead when has 4 neighbour' do
+      subject.create_life_at(0, 0)
+      subject.create_life_at(0, 1)
+      subject.create_life_at(0, 2)
+      subject.create_life_at(1, 0)
+
+      subject.tick!
+
+      expect(subject.has_life_at?(1, 1)).to be_false
+    end
+
+    it 'cell is dead when has 5 neighbour' do
+      subject.create_life_at(0, 0)
+      subject.create_life_at(0, 1)
+      subject.create_life_at(0, 2)
+      subject.create_life_at(1, 0)
+      subject.create_life_at(1, 2)
+
+      subject.tick!
+
+      expect(subject.has_life_at?(1, 1)).to be_false
+    end
+
+    it 'cell is dead when has 6 neighbour' do
+      subject.create_life_at(0, 0)
+      subject.create_life_at(0, 1)
+      subject.create_life_at(0, 2)
+      subject.create_life_at(1, 0)
+      subject.create_life_at(1, 2)
+      subject.create_life_at(2, 0)
+
+
+      subject.tick!
+
+      expect(subject.has_life_at?(1, 1)).to be_false
+    end
+
+    it 'cell is dead when has 7 neighbour' do
+      subject.create_life_at(0, 0)
+      subject.create_life_at(0, 1)
+      subject.create_life_at(0, 2)
+      subject.create_life_at(1, 0)
+      subject.create_life_at(1, 2)
+      subject.create_life_at(2, 0)
+      subject.create_life_at(2, 1)
+
+
+      subject.tick!
+
+      expect(subject.has_life_at?(1, 1)).to be_false
+    end
+
+    it 'cell is dead when has 8 neighbour' do
+      subject.create_life_at(0, 0)
+      subject.create_life_at(0, 1)
+      subject.create_life_at(0, 2)
+      subject.create_life_at(1, 0)
+      subject.create_life_at(1, 2)
+      subject.create_life_at(2, 0)
+      subject.create_life_at(2, 1)
+      subject.create_life_at(2, 2)
+
+      subject.tick!
+
+      expect(subject.has_life_at?(1, 1)).to be_false
+    end
+  end
 end
