@@ -30,11 +30,16 @@ class World
   def cells_binged_to_life_in_next_gen
     new_generation = []
     @alife_cells.each do |point|
-      dead_neighbours_for(*point).each do |point|
-        new_generation << point if neighbours_count(point) == 3
-      end
+      new_generation = new_generation
+        + new_lifes_around_point(*point)
     end
     new_generation
+  end
+
+  def new_lifes_around_point(x, y)
+    dead_neighbours_for(x, y).select do |point|
+      neighbours_count(point) == 3
+    end
   end
 
   def neighbours_count(point)
