@@ -1,6 +1,6 @@
 # Gol
 
-TODO: Write a gem description
+Simple implementation of [Conway's Game of Life](http://en.wikipedia.org/wiki/Conway%27s_Game_of_Life) kata.
 
 ## Installation
 
@@ -18,7 +18,15 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+```ruby
+require 'gol'
+
+world = World.new
+world.create_life_at(1, 1)
+...
+world.tick!
+world.has_life_at?(1, 1)
+```
 
 ## Contributing
 
