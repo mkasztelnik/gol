@@ -9,11 +9,8 @@ class World
   end
 
   def tick!
-    new_generation = @alife_cells.select do |point|
-      neighbours_count(point).between?(2, 3)
-    end
-
-    @alife_cells = new_generation.to_set
+    @alife_cells = cells_alife_in_next_gen
+      .concat(cells_binged_to_life_in_next_gen).to_set
   end
 
   def has_life_at?(x, y)
@@ -21,6 +18,40 @@ class World
   end
 
   private
+
+  def cells_alife_in_next_gen
+    @alife_cells.select do |point|
+      neighbours_count(point).between?(2, 3)
+    end
+  end
+
+  def cells_binged_to_life_in_next_gen
+    new_generation = []
+    @alife_cells.each do |point|
+      dead_neighbours = @@neighbours_offset.select do |offset|
+        point_with_offset = offset_point(point, offset)
+
+        !has_life_at?(point_with_offset[0], point_with_offset[1])
+      end.collect do |offset|
+        Point.new(*offset_point(point, offset))
+      end
+
+      dead_neighbours_for(point).each do |point|
+        new_generation << point if neighbours_count(point) == 3
+      end
+    end
+    new_generation
+  end
+
+  def dead_neighbours_for(point)
+    @@neighbours_offset.select do |offset|
+      point_with_offset = offset_point(point, offset)
+
+      !has_life_at?(point_with_offset[0], point_with_offset[1])
+    end.collect do |offset|
+      Point.new(*offset_point(point, offset))
+    end
+  end
 
   @@neighbours_offset = [
     [-1, -1], [-1, 0], [-1, 1],
@@ -30,8 +61,12 @@ class World
 
   def neighbours_count(point)
     @@neighbours_offset.select do |offset|
-      has_life_at?(point.x + offset[0], point.y + offset[1])
+      has_life_at?(*offset_point(point, offset))
     end.size
+  end
+
+  def offset_point(point, offset)
+    [point.x + offset[0], point.y + offset[1]]
   end
 
   class Point
